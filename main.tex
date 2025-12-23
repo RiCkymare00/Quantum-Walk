@@ -1,0 +1,193 @@
+\documentclass[tikz,border=8pt]{article}
+\usepackage{graphicx} 
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{amssymb}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,decorations.pathmorphing,shadings}
+
+\title{Quantum Walks}
+\author{Riccardo Marega}
+\date{December 2025}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+\subsection{Graph theory}
+\paragraph{Graph $\left(G\right)$:} ordered triple $\left( \mathbf{V}\left(G\right),\mathbf{E}\left(G\right),\psi_G \right)$ consisting of a nonempty set $\mathbf{V}\left(G\right)$ of vertices, a set $\mathbf{E}\left(G\right)$, disjoint from $\mathbf{V}\left(G\right)$, of edges, and an incidence function $\psi_G$ that associates with each edge of G an unordered pair of (not necessarily distinct) vertices of G.\\
+\begin{tikzpicture}[>=Stealth, every node/.style={font=\small}]
+\tikzset{
+  mynode/.style={
+    draw,
+    circle,
+    fill=cyan!30,
+    inner sep=1.8pt,
+    minimum size=6pt,
+    thick,
+    label distance=2mm,
+  },
+  edgelabel/.style={font=\footnotesize, fill=white, inner sep=0.7pt}
+}
+\node[mynode, label=right:{$A$}] (A) at (0,0) {};
+\node[mynode, label=above right:{$B$}] (B) at (2,0.8) {};
+\node[mynode, label=right:{$C$}] (C) at (3,-1) {};
+\node[mynode, label=below:{$D$}] (D) at (1.5,-2) {};
+\node[mynode, label=left:{$E$}] (E) at (-1,-1) {};
+\node[mynode, label=above left:{$F$}] (F) at (-0.5,1.2) {};
+\draw[thick] (A) -- (B) node[midway, above, edgelabel] {$e_1$};
+\draw[thick] (B) -- (C) node[midway, right, edgelabel] {$e_2$};
+\draw[thick] (C) -- (D) node[midway, below, edgelabel] {$e_3$};
+\draw[thick] (D) -- (A) node[midway, left, edgelabel] {$e_4$};
+\draw[thick] (B) .. controls (1,0.8) and (0.2,-0.2) .. (E) node[midway, left, edgelabel] {$e_8$};
+\draw[thick] (E) -- (F) node[midway, below left, edgelabel] {$e_6$};
+\path[thick] (E) edge[loop left] node[left, edgelabel] {$e_5$} (E);
+\path[thick] (C) edge[loop below] node[below, edgelabel] {$e_7$} (C);
+\node[anchor=west] at (4.0,1.2) {\begin{minipage}{6cm}
+\small
+Example:
+\\
+$V(G)=\{A,B,C,D,E,F\}$.\\
+$E(G)=\{e_1,\dots,e_8\}$.\\
+The incident function $\psi_G$ associates to each edge $e_i$ an unordered pair of nodes.
+\end{minipage}};
+\end{tikzpicture}
+\newline
+Let $\mathbf{Y}$ be a random variable over a finite space $\mathbf{X} \subseteq \mathbb{R}^d$, with $|\mathbf{X}|=n$ and $d\geq1$.\\
+For $y \in \mathbf{X}$, we denote $Pr\left(Y=y\right)$ as the probability that $Y = y$.\\
+A sequence of random variables $\mathbf{Y} = (Y_t)^{\infty}_{t=0}$ over $\mathbf{X}$ is a \textbf{Markov chain} if for all $t\geq 1,$ $Y_t$ is independent of $Y_0,\cdots,Y_{t-2}$ given $Y_{t-1}$,i.e.: $$
+Pr\left(Y_{t} = y_t|Y_{t-1} = y_{t-1},\cdots,Y_1 = y_1\right) = Pr\left(Y_{t} = y_t|Y_{t-1} = y_{t-1}\right) \eqqcolon P_n\left(y_{t-1},y_t\right)$$
+with
+$$ 
+y_1,\cdots,y_t \in \mathbf{X},
+$$\\
+where $P_t\left(x,y\right)$ is the one-step transition probability from the state $x$ to the state $y$ at the time step $t$.\\
+The chain is \textbf{time-homogeneous} when $P_t = P$ $\forall t\geq1$.\\
+A \textbf{stationary time-homogeneous} chain is characterized by the same marginal distribution $\mathbf{Y}_t$ for every $t$, i.e. the distribution $\pi$ of $\mathbf{Y}_t$ is invariant under the transition matrix $P$:
+$$
+\pi P = \pi.
+$$
+\begin{tikzpicture}[>=Stealth, every node/.style={font=\small}]
+\tikzset{
+  sA/.style={circle, draw, fill=cyan!2,  minimum size=6pt, thick,inner sep=1.8pt},
+  sB/.style={circle, draw, fill=cyan!30, minimum size=6pt, thick,inner sep=1.8pt},
+  sC/.style={circle, draw, fill=cyan!30, minimum size=6pt, thick,inner sep=1.8pt},
+  sD/.style={circle, draw, fill=cyan!20, minimum size=6pt, thick,inner sep=1.8pt},
+  sE/.style={circle, draw, fill=cyan!15, minimum size=6pt, thick,inner sep=1.8pt},
+  sF/.style={circle, draw, fill=cyan!35, minimum size=6pt, thick,inner sep=1.8pt},
+  edgelabel/.style={font=\scriptsize, fill=white, inner sep=0.6pt}
+}
+\node at (0,3.0) {\textbf{Distribution $\pi$ at time $t$}};
+\node[sA, label=above:$A$, label=below:$p_A$] (A1) at (0,1.2) {};
+\node[sB, label=right:$B$, label=left:$p_B$] (B1) at (1.8,0.8) {};
+\node[sC, label=below right:$C$, label=above left:$p_C$] (C1) at (1.6,-0.8) {};
+\node[sD, label=below:$D$, label=above:$p_D$] (D1) at (0,-1.2) {};
+\node[sE, label=left:$E$, label=right:$p_E$] (E1) at (-1.6,-0.6) {};
+\node[sF, label=above left:$F$, label=below right:$p_F$] (F1) at (-1.6,0.8) {};
+\draw[thick] (A1) -- (B1);
+\draw[thick] (B1) -- (C1);
+\draw[thick] (C1) -- (D1);
+\draw[thick] (D1) -- (E1);
+\draw[thick] (E1) -- (F1);
+\draw[thick] (F1) -- (A1);
+\draw[->, thick] (C1) edge[loop right] (C1);
+\draw[thick, ->] (3.0,0) -- (5.0,0)
+node[midway, above] {\small apply $P$};
+\node at (8.2,3.0) {\textbf{Distribution $\pi P$ at time $t+1$}};
+\node[sA, label=above:$A$, label=below:$p_A$] (A2) at (8.2,1.2) {};
+\node[sB, label=right:$B$, label=left:$p_B$] (B2) at (10.0,0.8) {};
+\node[sC, label=below right:$C$, label=above left:$p_C$] (C2) at (9.8,-0.8) {};
+\node[sD, label=below:$D$, label=above:$p_D$] (D2) at (8.2,-1.2) {};
+\node[sE, label=left:$E$, label=right:$p_E$] (E2) at (6.6,-0.6) {};
+\node[sF, label=above left:$F$, label=below right:$p_F$] (F2) at (6.6,0.8) {};
+\draw[thick] (A2) -- (B2);
+\draw[thick] (B2) -- (C2);
+\draw[thick] (C2) -- (D2);
+\draw[thick] (D2) -- (E2);
+\draw[thick] (E2) -- (F2);
+\draw[thick] (F2) -- (A2);
+\draw[->, thick] (C2) edge[loop right] (C2);
+\begin{scope}[shift={(-2,-3.2)}]
+  \fill[white] (0.6,0) rectangle ({0.6+1.375},0.6);
+  \foreach \i/\perc in {0/8, 1/30, 2/50, 3/70, 4/85, 5/95} {
+    \fill[cyan!\perc] ({0.6+1.375+\i*1.375},0) rectangle ({0.6+1.375+(\i+1)*1.375},0.6);
+  }
+  \fill[cyan!98!black] ({0.6+1.375+6*1.375},0) rectangle (11.6,0.6);
+  \draw (0.6,0) rectangle (11.6,0.6);
+  \draw (0.6,0) -- ++(0,-0.15) node[below,yshift=-2pt] {\small $0$};
+  \draw (11.6,0) -- ++(0,-0.15) node[below,yshift=-2pt] {\small $1$};
+\end{scope}
+\end{tikzpicture}
+A time-homogeneous Markov chain on a finite time horizon $\left(Y_t\right)^N_{t=0}$ with transition matrix $P$ and stationary distribution $\pi$ is said to be \textbf{reversible} if $$
+P^*(x,y) = \frac{\pi\left(y\right)P\left(y,x\right)}{\pi\left(x\right)} = P(x,y) \Rightarrow \pi\left(x\right)P\left(x,y\right)=\pi\left(y\right)P\left(y,x\right)
+$$\\
+for all $x,y \in \mathbf{X}$ given $\pi\left(x\right)>0$\footnote{This assumption is necessary for this construction.} for all $x \in \mathbf{X}$ and where $P^*(x,y)$ refers to the transition probabilities of the reversed chain $\left(Y_t\right)^0_{N}$.\\
+In matrix form:$$
+P^* = diag\left(\pi\right)^{-1}P^Tdiag\left(\pi\right).
+$$
+In other words, a Markov chain is reversible when its behavior in time is indistinguishable from that observed when time is run backward.\\
+\paragraph{Theorem:} Given a stationary Markov chain $\mathbf{Y} = \left(Y_t\right)$ with $t\geq0$ on a finite space $\mathbf{X}$, with transition matrix $P$ and stationary distribution $\pi$, then the following statements hold:\begin{enumerate}
+    \item \textbf{Detailed balance}: $\pi\left(x\right)P\left(x,y\right)=\pi\left(y\right)P\left(y,x\right)$ $\forall x,y \in \mathbf{X}$;
+    \item \textbf{Two-step symmetry}: $Pr\left(Y_1 = y_1, Y_2 = y_2\right) = Pr\left(Y_1 = y_2, Y_2 = y_1\right)$\\$\forall y_1,y_2 \in \mathbf{X}$;
+    \item \textbf{Finite-path symmetry}: $Pr\left(\left(Y_t\right)^N_0 = \left(y_t\right)^N_0\right) = Pr\left(\left(Y_t\right)^0_N = \left(y_t\right)^0_N\right)$\\$\forall\left(y\right)^N_0\in\mathbf{X}^N.$
+\end{enumerate}
+The chain is reversible if and only if any of these conditions (and therefore all conditions) hold.\\
+\newline
+A graph $G$ is a \textbf{bipartite} graph with vertex class $V_1$ and $V_2$ if $V(G) = V_1 \cup V_2, V_1 \cap V_2 = \varnothing$ and every edge joins a vertex of $V_1$ to a vertex of $V_2$.\\
+Similarly $G$ is r-partite with vertex classes $V_1,\cdots,V_r$ if $V(G) = V_1 \cup\cdots\cup V_r, V_1\cap\cdots\cap V_r = \varnothing$, and no edges joins vertices in the same class.\\
+Follows a graphical example:\\
+\newline
+\begin{center}
+\begin{tikzpicture}[>=Stealth, every node/.style={font=\small}]
+\tikzset{
+  mynode/.style={
+    draw,
+    circle,
+    fill=cyan!30,
+    inner sep=1.5pt,
+    minimum size=5pt,
+    thick,
+  }
+}
+
+\node[mynode] (A) at (0,0) {};
+\node[mynode] (B) at (-1.5,1) {};
+\node[mynode] (C) at (0,1.2) {};
+\node[mynode] (D) at (1.5,1) {};
+\node[mynode] (E) at (0,-1) {};
+\node[mynode] (F) at (-2.5,1.8) {};
+\node[mynode] (G) at (-0.5,1.8) {};
+\node[mynode] (H) at (0.5,2) {};
+\node[mynode] (I) at (1.5,2) {};
+\node[mynode] (J) at (1.8,1.5) {};
+\draw[thick] (A) -- (B);
+\draw[thick] (A) -- (C);
+\draw[thick] (A) -- (D);
+\draw[thick] (A) -- (E);
+
+\draw[thick] (B) -- (F);
+\draw[thick] (B) -- (G);
+
+\draw[thick] (C) -- (H);
+
+\draw[thick] (D) -- (I);
+\draw[thick] (D) -- (J);
+
+\end{tikzpicture}
+\end{center}
+\subsection{Random walks}
+A random walk on a graph is defined by a sequence of nodes, starting from a source node. At each step, the walker moves along an edge to a neighboring node, reaching a new node and repeating the process.\\
+\newline
+Given a weighted, undirected graph $\mathrm{G} = \left( \mathbf{X}\left(\mathrm{G}\right), \mathbf{E}\left(\mathrm{G}\right), \textit{w}\right)$ with $|\mathbf{X}| = n$, $\mathbf{E}\left(\mathrm{G}\right) \subset \mathbf{X} \times \mathbf{X}$ (such that $\left( u,v\right) \in \mathbf{E}$ if and only if $\left(v,u\right) \in \mathbf{E}$) and $\textit{w}:\mathbf{E} \rightarrow \mathbb{R}_{\geq 0}$\footnote{If an edge is not present then its weight is equal to zero, moreover the total weight is $\sum_{u,v \in \mathbf{X}}\textit{w}_{u,v}$ and the weight of the edges leaving a node $u$ is $\sum_{v\in \mathbf{X}}\textit{w}_{u,v}$.}, then a \textbf{Random Walk} on $\mathrm{G}$ is described by a Markov chain over $\mathbf{X}$ with \textbf{Transition Matrix} ($P$), defined by: $$
+P_{u,v} = \frac{\textit{w}_{u,v}}{{\textit{w}_u}}.
+$$
+In a random walk the choice of the following node $v$, given the current node $u$, is proportional to the edge weight $w_{u,v}$.\\
+More precisely, a random walk on $\mathrm{G}$ is described by a reversible Markov chain.\\
+If the graph is connected and non-bipartite, the random walk is said to be \textbf{ergodic} and its probability distribution converges to the stationary distribution $\pi \in \mathbb{R}^d$ defined as: $
+\pi_u = \frac{\sum_{v\in \mathbf{X}}\textit{w}_{u,v}}{\sum_{u,v \in \mathbf{X}}\textit{w}_{u,v}} = \frac{w_u}{W}
+$:$$
+\boxed{\lim_{t \to \infty} \mathbb{P}(Y_t = u \mid Y_v = v) = \pi_u, \quad \forall u,v \in \mathbf{X}.}
+$$
+\end{document}
