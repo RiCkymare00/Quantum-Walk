@@ -58,7 +58,7 @@ The incident function $\psi_G$ associates to each edge $e_i$ an unordered pair o
 Let $\mathbf{Y}$ be a random variable over a finite space $\mathbf{X} \subseteq \mathbb{R}^d$, with $|\mathbf{X}|=n$ and $d\geq1$.\\
 For $y \in \mathbf{X}$, we denote $Pr\left(Y=y\right)$ as the probability that $Y = y$.\\
 A sequence of random variables $\mathbf{Y} = (Y_t)^{\infty}_{t=0}$ over $\mathbf{X}$ is a \textbf{Markov chain} if for all $t\geq 1,$ $Y_t$ is independent of $Y_0,\cdots,Y_{t-2}$ given $Y_{t-1}$,i.e.: $$
-Pr\left(Y_{t} = y_t|Y_{t-1} = y_{t-1},\cdots,Y_1 = y_1\right) = Pr\left(Y_{t} = y_t|Y_{t-1} = y_{t-1}\right) \eqqcolon P_n\left(y_{t-1},y_t\right)$$
+Pr\left(Y_{t} = y_t|Y_{t-1} = y_{t-1},\cdots,Y_1 = y_1\right) = Pr\left(Y_{t} = y_t|Y_{t-1} = y_{t-1}\right) \eqqcolon P_t\left(y_{t-1},y_t\right)$$
 with
 $$ 
 y_1,\cdots,y_t \in \mathbf{X},
@@ -181,13 +181,36 @@ Follows a graphical example:\\
 A random walk on a graph is defined by a sequence of nodes, starting from a source node. At each step, the walker moves along an edge to a neighboring node, reaching a new node and repeating the process.\\
 \newline
 Given a weighted, undirected graph $\mathrm{G} = \left( \mathbf{X}\left(\mathrm{G}\right), \mathbf{E}\left(\mathrm{G}\right), \textit{w}\right)$ with $|\mathbf{X}| = n$, $\mathbf{E}\left(\mathrm{G}\right) \subset \mathbf{X} \times \mathbf{X}$ (such that $\left( u,v\right) \in \mathbf{E}$ if and only if $\left(v,u\right) \in \mathbf{E}$) and $\textit{w}:\mathbf{E} \rightarrow \mathbb{R}_{\geq 0}$\footnote{If an edge is not present then its weight is equal to zero, moreover the total weight is $\sum_{u,v \in \mathbf{X}}\textit{w}_{u,v}$ and the weight of the edges leaving a node $u$ is $\sum_{v\in \mathbf{X}}\textit{w}_{u,v}$.}, then a \textbf{Random Walk} on $\mathrm{G}$ is described by a Markov chain over $\mathbf{X}$ with \textbf{Transition Matrix} ($P$), defined by: $$
-P_{u,v} = \frac{\textit{w}_{u,v}}{{\textit{w}_u}}.
+P_{u,v} = \frac{\textit{w}_{u,v}}{\sum_{v\in \mathbf{X}}\textit{w}_{u,v}}.
 $$
 In a random walk the choice of the following node $v$, given the current node $u$, is proportional to the edge weight $w_{u,v}$.\\
 More precisely, a random walk on $\mathrm{G}$ is described by a reversible Markov chain.\\
-If the graph is connected and non-bipartite, the random walk is said to be \textbf{ergodic} and its probability distribution converges to the stationary distribution $\pi \in \mathbb{R}^d$ defined as: $
-\pi_u = \frac{\sum_{v\in \mathbf{X}}\textit{w}_{u,v}}{\sum_{u,v \in \mathbf{X}}\textit{w}_{u,v}} = \frac{w_u}{W}
-$:$$
-\boxed{\lim_{t \to \infty} \mathbb{P}(Y_t = u \mid Y_v = v) = \pi_u, \quad \forall u,v \in \mathbf{X}.}
+If the graph is connected and non-bipartite, the random walk is said to be \textbf{ergodic} and its probability distribution \underline{converges} to the stationary distribution $\pi \in \mathbb{R}^d$ defined as: $$
+\pi_u = \frac{\sum_{v\in \mathbf{X}}\textit{w}_{u,v}}{\sum_{u,v \in \mathbf{X}}\textit{w}_{u,v}} = \frac{w_u}{W}.
+$$
+$\pi$ is the only eigenvector of P with eigenvalue 1.\\
+\newline
+While the transition matrix $P$ of a reversible Markov chain is not always symmetric, the \textbf{Discriminant matrix} $D(P)$, defined using the transition matrix itself, is always symmetric:
+$$
+D(P) = diag(\sqrt{\pi})Pdiag(\sqrt{\pi})^{-1}.
+$$
+\subsubsection{Frameworks}...
+\section{Quantum walks and quantum search algorithms}
+\paragraph{Lemma \textit{(Effective Spectral Gap Lemma)}.} Let $\Pi_A$ and $\Pi_B$ be two orthogonal projectors in the same vector space, and $R_A = 2\Pi_A - \mathbf{1}$ and $R_B = 2\Pi_B - \mathbf{1}$ be the reflection about their images. Assume $P_{\Theta}$, where $\Theta \geq 0$, is the orthogonal projector on the span of eigenvectors of $R_AR_B$ with eigenvalues $e^{i\theta}$ such that $|\theta|\leq \Theta$. Then, for any vector $w$ in the kernel of $\Pi_A$, we have $$
+||P_{\Theta}\Pi_Bw||\leq\frac{\Theta}{2}||w||.
+$$
+\textit{proof.} ...
+\paragraph{Theorem \textit{(Phase estimation)}.} Assume a unitary $U$ is given as a black box. There exist a quantum algorithm that, given an eigenvector $\psi \in U$ with eigenvalue $e^{i\theta}$, outputs a real number $w$ such that $|w-\phi|\leq\delta$ with probability at least $\frac{9}{10}$. Moreover, the algorithms uses $\mathbb{O}(\frac{1}{\delta})$ controlled applications of $U$ and $\frac{1}{\delta}polylog\left(\frac{1}{\delta}\right)$ other elementary operations.\\
+\newline
+\textit{proof.} ...\\
+\newline
+\paragraph{Definition \textit{(Quantum walk operator).}} For any reversible Markov chain $P$ on a finite state space $X$, a \textbf{quantum walk operator} $W(P)$ is a unitary $\mathit{H}_A\otimes\mathit{H_X}$, such that $|\bar{0}\rangle \in \mathit{H_A}$, $span\{|u\rangle:u\in X\} \subseteq \mathit{H_X}$, and for all $u \in X$ it holds that $$
+\left(\langle \bar{0}|\otimes \langle u|\right)W\left(P\right)\left(| \bar{0}\rangle \otimes \mathbf{1}_X\right) = \langle u|D(P)
+$$
+\begin{center}
+    and
+\end{center}
+$$
+\left(\langle \bar{0}|\otimes \mathbf{1}_X\right)W\left(P\right)\left(| \bar{0}\rangle \otimes |u\rangle\right) = W(P)|u\rangle.
 $$
 \end{document}
