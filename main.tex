@@ -3,6 +3,10 @@
 \usepackage{amsfonts}
 \usepackage{mathtools}
 \usepackage{amssymb}
+\usepackage{tcolorbox}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
 
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta,decorations.pathmorphing,shadings}
@@ -196,14 +200,20 @@ D(P) = diag(\sqrt{\pi})Pdiag(\sqrt{\pi})^{-1}.
 $$
 \subsubsection{Frameworks}...
 \section{Quantum walks and quantum search algorithms}
-\paragraph{Lemma \textit{(Effective Spectral Gap Lemma)}.} Let $\Pi_A$ and $\Pi_B$ be two orthogonal projectors in the same vector space, and $R_A = 2\Pi_A - \mathbf{1}$ and $R_B = 2\Pi_B - \mathbf{1}$ be the reflection about their images. Assume $P_{\Theta}$, where $\Theta \geq 0$, is the orthogonal projector on the span of eigenvectors of $R_AR_B$ with eigenvalues $e^{i\theta}$ such that $|\theta|\leq \Theta$. Then, for any vector $w$ in the kernel of $\Pi_A$, we have $$
+\subsection{Preliminaries}
+\paragraph{Lemma \textit{(Effective Spectral Gap)}.} Let $\Pi_A$ and $\Pi_B$ be two orthogonal projectors in the same vector space, and $R_A = 2\Pi_A - \mathbf{1}$ and $R_B = 2\Pi_B - \mathbf{1}$ be the reflection about their images. Assume $P_{\Theta}$, where $\Theta \geq 0$, is the orthogonal projector on the span of eigenvectors of $R_AR_B$ with eigenvalues $e^{i\theta}$ such that $|\theta|\leq \Theta$ ($P_{\Theta} = \sum_{\beta:|\theta(\beta)|\leq \Theta}|\beta\rangle\langle\beta |$). Then, for any vector $w$ in the kernel of $\Pi_A$ ($\Pi_A|w\rangle = 0$), we have $$
 ||P_{\Theta}\Pi_Bw||\leq\frac{\Theta}{2}||w||.
 $$
-\textit{proof.} ...
+\textit{proof.} Let $|v\rangle = P_{\Theta}\Pi_B|w\rangle$, $|v'\rangle = R_B|v\rangle$ and $|v''\rangle = R_A|v'\rangle = R_AR_B|v\rangle$.\\
+When $\Theta$ is small, $|v\rangle$ and $|v''\rangle$ are close:
+$$
+\cdots
+$$
 \paragraph{Theorem \textit{(Phase estimation)}.} Assume a unitary $U$ is given as a black box. There exist a quantum algorithm that, given an eigenvector $\psi \in U$ with eigenvalue $e^{i\theta}$, outputs a real number $w$ such that $|w-\phi|\leq\delta$ with probability at least $\frac{9}{10}$. Moreover, the algorithms uses $\mathbb{O}(\frac{1}{\delta})$ controlled applications of $U$ and $\frac{1}{\delta}polylog\left(\frac{1}{\delta}\right)$ other elementary operations.\\
 \newline
 \textit{proof.} ...\\
 \newline
+\subsection{Quantum walk}
 \paragraph{Definition \textit{(Quantum walk operator).}} For any reversible Markov chain $P$ on a finite state space $X$, a \textbf{quantum walk operator} $W(P)$ is a unitary $\mathit{H}_A\otimes\mathit{H_X}$, such that $|\bar{0}\rangle \in \mathit{H_A}$, $span\{|u\rangle:u\in X\} \subseteq \mathit{H_X}$, and for all $u \in X$ it holds that $$
 \left(\langle \bar{0}|\otimes \langle u|\right)W\left(P\right)\left(| \bar{0}\rangle \otimes \mathbf{1}_X\right) = \langle u|D(P)
 $$
@@ -211,6 +221,42 @@ $$
     and
 \end{center}
 $$
-\left(\langle \bar{0}|\otimes \mathbf{1}_X\right)W\left(P\right)\left(| \bar{0}\rangle \otimes |u\rangle\right) = W(P)|u\rangle.
+\left(\langle \bar{0}|\otimes \mathbf{1}_X\right)W\left(P\right)\left(| \bar{0}\rangle \otimes |u\rangle\right) = D(P)|u\rangle.
 $$
+\newline
+In this framework, if $\mathit{H_u}$ denotes the \textit{local space} of u, $\oplus_{u\in\mathit{H_X}}\mathit{H_u}$ equals the whole space of the quantum walk, and $\oplus_{u\in\mathit{H_A}}\mathit{H_u}$ equals the residual subspace.\\
+\newline
+Defined as $\sigma$ the initial probability distribution, the quantum walk starts in the state $$
+\varsigma = \sum_{\psi \in \mathit{H}_A\otimes\mathit{H_X}}\sqrt{\sigma_{\psi}}|\psi\rangle.
+$$
+The \textbf{step of the quantum walk} is defined by $R_AR_X$ where $R_X = \oplus_{u\in X}D_u$ and $R_A = \oplus_{u\in A}D_u$ are the direct sums of the diffusion operations. Each $D_u$ is a reflection operation in $\mathit{H}_u$. Hence, all $D_u$ in $R_X$ or $R_A$ commute, that makes them easy to implement in parallel. They are as follows:\begin{itemize}
+    \item If $u$ is marked, then $D_u$ is the identity $\mathbf{1}_u$;
+    \item If $u$ in not marked, then $D_u$ is the reflection about the orthogonal component of $\psi_u \in \mathit{H_u}$, where $$
+    |\psi_u\rangle = \sqrt{\frac{\sigma_u}{C_1R}}|u\rangle +\sum_{u,v \in \mathit{H_A}\otimes\mathit{H_X}}\sqrt{w_{uv}}|uv\rangle
+    $$
+    where $C_1 > 0$.
+\end{itemize}
+\begin{tcolorbox}[colback=white,colframe=black,title={Quantum walk algorithm}]
+\small
+\begin{algorithm}[H]
+\caption{}
+\begin{algorithmic}[1]
+\State Start in the state $\varsigma$.
+\State Calculate, for each $u\in \mathit{H_A}\otimes\mathit{H_X}$, whether it is marked, and measure this bit.
+\If {the result of the measurement shows `marked'}
+    \State \textbf{output} ``marked vertices exist''.
+    \State \textbf{quit}.
+\EndIf
+\State Execute quantum phase estimation on $R_B R_A$ with precision $\dfrac{1}{C\sqrt{RW}}$.
+\If {the eigenvalue is $1$}
+    \State \textbf{output} ``marked vertices exist''.
+\Else
+    \State \textbf{output} ``no marked vertices''.
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+\end{tcolorbox}
+\paragraph{Theorem} The previous algorithm detects the presence of a marked vertex with probability at least $\frac{2}{3}$. The algorithms uses $\mathbb{O}(\sqrt{RW})$ steps of the quantum walk.\\
+\newline
+\textit{proof.}
 \end{document}
