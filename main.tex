@@ -201,14 +201,24 @@ $$
 \subsubsection{Frameworks}...
 \section{Quantum walks and quantum search algorithms}
 \subsection{Preliminaries}
-\paragraph{Lemma \textit{(Effective Spectral Gap)}.} Let $\Pi_A$ and $\Pi_B$ be two orthogonal projectors in the same vector space, and $R_A = 2\Pi_A - \mathbf{1}$ and $R_B = 2\Pi_B - \mathbf{1}$ be the reflection about their images. Assume $P_{\Theta}$, where $\Theta \geq 0$, is the orthogonal projector on the span of eigenvectors of $R_AR_B$ with eigenvalues $e^{i\theta}$ such that $|\theta|\leq \Theta$ ($P_{\Theta} = \sum_{\beta:|\theta(\beta)|\leq \Theta}|\beta\rangle\langle\beta |$). Then, for any vector $w$ in the kernel of $\Pi_A$ ($\Pi_A|w\rangle = 0$), we have $$
-||P_{\Theta}\Pi_Bw||\leq\frac{\Theta}{2}||w||.
+\paragraph{Lemma \textit{(Effective Spectral Gap)}.} Let $\Pi_A$ and $\Pi_B$ be two orthogonal projectors in the same vector space, and $R_A = 2\Pi_A - \mathbf{1}$ and $R_B = 2\Pi_B - \mathbf{1}$ be the reflection about their images. Assume $P_{\Theta}$, where $\Theta \geq 0$, is the orthogonal projector on the span of eigenvectors of $R_AR_B$ with eigenvalues $e^{i\theta(\beta)}$ such that $|\theta|\leq \Theta$ ($P_{\Theta} = \sum_{\beta:|\theta(\beta)|\leq \Theta}|\beta\rangle\langle\beta |$), where $\{|\beta\rangle\}$ is a complete orthonormal set of eigenvectors of $R_AR_B$. Then, for any vector $w$ in the kernel of $\Pi_B$ ($\Pi_B|w\rangle = 0$), we have $$
+||P_{\Theta}\Pi_A|w\rangle||\leq\frac{\Theta}{2}|||w\rangle||.
 $$
-\textit{proof.} Let $|v\rangle = P_{\Theta}\Pi_B|w\rangle$, $|v'\rangle = R_B|v\rangle$ and $|v''\rangle = R_A|v'\rangle = R_AR_B|v\rangle$.\\
+\newline
+\textit{proof.} Let $|v\rangle = P_{\Theta}\Pi_A|w\rangle$, $|v'\rangle = R_B|v\rangle$ and $|v''\rangle = R_A|v'\rangle = R_AR_B|v\rangle$.\\
 When $\Theta$ is small, $|v\rangle$ and $|v''\rangle$ are close:
 $$
-\cdots
+|| |v\rangle -|v''\rangle||^2 = ||\sum_{\beta:|\theta(\beta)|\leq\Theta}(1-e^{i\theta(\beta)}\langle\beta|v\rangle|\beta\rangle)||^2 \leq2(1-cos(\Theta))|||v\rangle||^2\leq\Theta^2|||v\rangle||^2.
 $$
+Notice that $|v\rangle+|v'\rangle$ is fixed by $R_B$. Similarly, $R_A$ fixes $|v'\rangle+|v''\rangle$ and $\bar{R}_A = \mathbf{1}-R_A$ fixes $|v'\rangle-|v''\rangle$.\\
+Hence $0 = \langle v+v'|w\rangle = \langle v+v'|R_A|w\rangle + \langle v+v'|\bar{R}_A|w\rangle = \langle v+v''|R_A|w\rangle + \langle v-v''|\bar{R}_A|w\rangle$, therefore:\\
+$|||v\rangle||^2 = |\langle v|R_A|w\rangle| = \frac{1}{2}|\langle v-v'|R_A|w\rangle + \langle v+v''|R_A|w\rangle| = \frac{1}{2}|\langle v-v''|(R_A-\bar{R}_A)|w\rangle|.$\\
+We conclude $$
+|||v\rangle||^2 \leq \frac{1}{2}|||v\rangle - |v''\rangle||||(R_A-\bar{R}_A)|w\rangle||\leq\frac{\Theta}{2}|||v\rangle||||w\rangle||.
+$$
+\hfill $\square$\\
+\newline
+\paragraph{Interpretation:}\textit{When the initial state is (approximately) orthogonal to one of the subspaces defining the reflections, the portion of the state supported on eigenvalues close to $1$ (i.e., eigenvectors nearly unaffected by rotation) is necessarily small. The lemma ensures that most of the state must therefore lie in spectral regions where $R_AR_B$ acts non-trivially, forcing the evolution to change the state rather than leaving it nearly fixed. In particular, the inequality shows that the non-evolving component is bounded by $\Theta/2$, meaning the part that remains almost unchanged is itself limited by $\Theta$.}
 \paragraph{Theorem \textit{(Phase estimation)}.} Assume a unitary $U$ is given as a black box. There exist a quantum algorithm that, given an eigenvector $\psi \in U$ with eigenvalue $e^{i\theta}$, outputs a real number $w$ such that $|w-\phi|\leq\delta$ with probability at least $\frac{9}{10}$. Moreover, the algorithms uses $\mathbb{O}(\frac{1}{\delta})$ controlled applications of $U$ and $\frac{1}{\delta}polylog\left(\frac{1}{\delta}\right)$ other elementary operations.\\
 \newline
 \textit{proof.} ...\\
@@ -224,18 +234,20 @@ $$
 \left(\langle \bar{0}|\otimes \mathbf{1}_X\right)W\left(P\right)\left(| \bar{0}\rangle \otimes |u\rangle\right) = D(P)|u\rangle.
 $$
 \newline
-In this framework, if $\mathit{H_u}$ denotes the \textit{local space} of u, $\oplus_{u\in\mathit{H_X}}\mathit{H_u}$ equals the whole space of the quantum walk, and $\oplus_{u\in\mathit{H_A}}\mathit{H_u}$ equals the residual subspace.\\
+In this framework, if $\mathit{H_u}$ denotes the \textit{local space} of u, $\bigoplus_{u\in\mathit{H_X}}\mathit{H_u}$ equals the whole space of the quantum walk, and $\bigoplus_{u\in\mathit{H_A}}\mathit{H_u}$ equals the residual subspace.\\
 \newline
 Defined as $\sigma$ the initial probability distribution, the quantum walk starts in the state $$
 \varsigma = \sum_{\psi \in \mathit{H}_A\otimes\mathit{H_X}}\sqrt{\sigma_{\psi}}|\psi\rangle.
 $$
-The \textbf{step of the quantum walk} is defined by $R_AR_X$ where $R_X = \oplus_{u\in X}D_u$ and $R_A = \oplus_{u\in A}D_u$ are the direct sums of the diffusion operations. Each $D_u$ is a reflection operation in $\mathit{H}_u$. Hence, all $D_u$ in $R_X$ or $R_A$ commute, that makes them easy to implement in parallel. They are as follows:\begin{itemize}
+The \textbf{step of the quantum walk} is defined by $R_AR_X$ where $R_X = \bigoplus_{u\in X}D_u$ and $R_A = \bigoplus_{u\in A}D_u$ are the direct sums of the diffusion operations. Each $D_u$ is a reflection operation in $\mathit{H}_u$. Hence, all $D_u$ in $R_X$ or $R_A$ commute, that makes them easy to implement in parallel. They are as follows:\begin{itemize}
     \item If $u$ is marked, then $D_u$ is the identity $\mathbf{1}_u$;
     \item If $u$ in not marked, then $D_u$ is the reflection about the orthogonal component of $\psi_u \in \mathit{H_u}$, where $$
     |\psi_u\rangle = \sqrt{\frac{\sigma_u}{C_1R}}|u\rangle +\sum_{u,v \in \mathit{H_A}\otimes\mathit{H_X}}\sqrt{w_{uv}}|uv\rangle
     $$
     where $C_1 > 0$.
 \end{itemize}
+\paragraph{Note:} \textit{In the context of a quantum walk, the Effective Spectral Gap Lemma ensures that the state cannot remain trapped in the ``slow'' spectral regions. The portion of the state corresponding to eigenvalues near $1$ (almost unaffected by rotation) is bounded by $\Theta$, so most of the state lies in regions where $R_AR_X$ acts non-trivially. Each application of $R_AR_X$ moves the state significantly, guaranteeing progress through the walk. Moreover, a larger spectral gap implies faster evolution, preventing the walk from getting stuck in subspaces.}\\
+\newline
 \begin{tcolorbox}[colback=white,colframe=black,title={Quantum walk algorithm}]
 \small
 \begin{algorithm}[H]
@@ -247,7 +259,7 @@ The \textbf{step of the quantum walk} is defined by $R_AR_X$ where $R_X = \oplus
     \State \textbf{output} ``marked vertices exist''.
     \State \textbf{quit}.
 \EndIf
-\State Execute quantum phase estimation on $R_B R_A$ with precision $\dfrac{1}{C\sqrt{RW}}$.
+\State Execute quantum phase estimation on $R_A R_X$ with precision $\dfrac{1}{C\sqrt{RW}}$.
 \If {the eigenvalue is $1$}
     \State \textbf{output} ``marked vertices exist''.
 \Else
