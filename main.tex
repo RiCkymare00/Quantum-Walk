@@ -219,7 +219,24 @@ $$
 \hfill $\square$\\
 \newline
 \paragraph{Interpretation:}\textit{When the initial state is (approximately) orthogonal to one of the subspaces defining the reflections, the portion of the state supported on eigenvalues close to $1$ (i.e., eigenvectors nearly unaffected by rotation) is necessarily small. The lemma ensures that most of the state must therefore lie in spectral regions where $R_AR_B$ acts non-trivially, forcing the evolution to change the state rather than leaving it nearly fixed. In particular, the inequality shows that the non-evolving component is bounded by $\Theta/2$, meaning the part that remains almost unchanged is itself limited by $\Theta$.}
-\paragraph{Theorem \textit{(Phase estimation)}.} Assume a unitary $U$ is given as a black box. There exist a quantum algorithm that, given an eigenvector $\psi \in U$ with eigenvalue $e^{i\theta}$, outputs a real number $w$ such that $|w-\phi|\leq\delta$ with probability at least $\frac{9}{10}$. Moreover, the algorithms uses $\mathbb{O}(\frac{1}{\delta})$ controlled applications of $U$ and $\frac{1}{\delta}polylog\left(\frac{1}{\delta}\right)$ other elementary operations.\\
+\subsubsection{Quantum Fourier Transform and Phase Estimation}
+\paragraph{Motivation:} One of the most useful way of solving complex mathematical problems is to transforming them into problems for which the solutions are known.
+\paragraph{Discrete Fourier Transform:}
+$$
+y_k = \frac{1}{\sqrt{N}}\sum_{j=0}^{N-1}x_je^\frac{2\pi ijk}{N},
+$$
+where the input vector $(x_0,\cdots,x_{N_1} )$ is a vector of length $N$ composed of complex number.
+\paragraph{Quantum Fourier Transform:}$$
+|j\rangle \rightarrow \frac{1}{\sqrt{N}}\sum_{j=o}^{N-1}e^{\frac{2\pi ijk}{N}}|k\rangle,
+$$
+where $\{|0\rangle,\cdots, |N-1\rangle\}$ constitute an orthonormal basis.\\
+Equivalently, the action on an arbitrary state may be written as:$$
+\sum_{j=0}^{N-1}x_j|j\rangle \rightarrow \sum_{k=0}^{N-1}y_k|k\rangle,
+$$
+where the amplitudes $y_k$ are the discrete Fourier transform of the amplitudes $x_j$.\\
+\textit{It is not obvious from the definition, but this transformation is unitary and thus can be implemented as the dynamics for a quantum computer.}\\
+The Fourier Transform is the key to a general procedure known as \textbf{phase estimation}, which in turn is the key for many quantum algorithms.
+\paragraph{Theorem \textit{(Phase estimation)}.} Assume a unitary $U$ is given as a black box. There exist a quantum algorithm that, given an eigenvector $\psi \in U$ with eigenvalue $e^{i\phi}$, outputs a real number $w$ such that $|w-\phi|\leq\delta$ with probability at least $\frac{9}{10}$. Moreover, the algorithms uses $\mathbb{O}(\frac{1}{\delta})$ controlled applications of $U$ and $\frac{1}{\delta}polylog\left(\frac{1}{\delta}\right)$ other elementary operations.\\
 \newline
 \textit{proof.} ...\\
 \newline
