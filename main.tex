@@ -6,7 +6,8 @@
 \usepackage{tcolorbox}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-
+\usepackage{quantikz}
+\usepackage{amsmath}
 
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta,decorations.pathmorphing,shadings}
@@ -18,7 +19,7 @@
 \begin{document}
 \maketitle
 \tableofcontents
-
+\newpage
 \section{Introduction}
 \subsection{Graph theory}
 \paragraph{Graph $\left(G\right)$:} ordered triple $\left( \mathbf{V}\left(G\right),\mathbf{E}\left(G\right),\psi_G \right)$ consisting of a nonempty set $\mathbf{V}\left(G\right)$ of vertices, a set $\mathbf{E}\left(G\right)$, disjoint from $\mathbf{V}\left(G\right)$, of edges, and an incidence function $\psi_G$ that associates with each edge of G an unordered pair of (not necessarily distinct) vertices of G.\\
@@ -235,7 +236,35 @@ Equivalently, the action on an arbitrary state may be written as:$$
 $$
 where the amplitudes $y_k$ are the discrete Fourier transform of the amplitudes $x_j$.\\
 \textit{It is not obvious from the definition, but this transformation is unitary and thus can be implemented as the dynamics for a quantum computer.}\\
-The Fourier Transform is the key to a general procedure known as \textbf{phase estimation}, which in turn is the key for many quantum algorithms.
+The Fourier Transform is the key to a general procedure known as \textbf{phase estimation}, which in turn is the key for many quantum algorithms.\\
+Suppose a unitary operator $U$ has an eigenvector $\psi$ with eigenvalue $e^{2 \pi i \phi}$, where the value of $\phi$ is unknown, phase estimation algorithm can be used to retrieve (or estimate) that value. To perform the estimation we assume that we have a black box (\textbf{oracle}) capable of preparing the state $|\psi\rangle$ and performing the controlled-$U^{2^j}$ operation, for suitable non-negative integers $j$. The use of black boxes indicates that phase estimation procedure is not a complete quantum algorithm in its own right (it rather have to be thought as a subroutine of more complex computational operations).\\
+The quantum phase estimation procedure uses two registers. The first register contains $t$ qubits in the state $|0\rangle$ (where $t$ depends on the number of digits of accuracy we wish to have in the estimate for $\phi$ and with what probability we wish the phase estimation to be successful) and the second register begins in the state $|\psi\rangle$.\\
+The phase estimation is performed in two stages: first the following circuit is applied
+$$
+\tikzset{every node/.append style={inner sep=1pt}}
+{\scriptsize 
+\begin{quantikz}[column sep=4pt, row sep=4pt, scale=0.88, transform shape]
+\lstick[wires=4]{First register\\$t$ qubits} \ket{0} & \gate{H} & \qw & \qw & \qw & \qw \ldots \qw & \ctrl{4} & \qw & \rstick{$e^{2\pi i(2^{t-1}\varphi)}\ket{1}$} \\
+\ket{0} & \gate{H} & \qw & \qw & \ctrl{3} & \qw \ldots \qw & \qw        & \qw & \rstick{$e^{2\pi i(2^{2}\varphi)}\ket{1}$} \\
+\ket{0} & \gate{H} & \qw & \ctrl{2} & \qw        & \qw \ldots \qw & \qw        & \qw & \rstick{$e^{2\pi i(2^{1}\varphi)}\ket{1}$} \\
+\ket{0} & \gate{H} & \ctrl{1} & \qw & \qw        & \qw \ldots \qw & \qw        & \qw & \rstick{$e^{2\pi i(2^{0}\varphi)}\ket{1}$} \\
+\lstick{Second register\\$\ket{\psi}$}
+        & \qw & \gate{U^{2^0}} & \gate{U^{2^1}} & \gate{U^{2^2}} & \qw \ldots \qw & \gate{U^{2^{t-1}}} & \qw & \rstick{\ket{\psi}}
+\end{quantikz}
+}
+$$
+then, the inverse of the quantum Fourier transform is applied to the first register.\\
+The final state of the first register after having applied the previous circuit is:
+$$
+\frac{1}{2^{\frac{t}{2}}}\left(|0\rangle + e^{2\pi i 2^{t-1}\phi}|1\rangle\right)\left(|0\rangle + e^{2\pi i 2^{t-2}\phi}|1\rangle\right)\cdots\left(|0\rangle + e^{2\pi i 2^{0}\phi}|1\rangle\right) =
+$$
+$$
+=\frac{1}{2^{\frac{t}{2}}}\sum_{k=0}^{2^t-1}e^{2\pi i \phi k}|k\rangle.
+$$
+After having then applied the inverse quantum transform to the first register the, final step is to read the output of first register by performing a measurement in the computational basis:$$
+\frac{1}{2^{\frac{t}{2}}}\sum_{j=0}^{2^t-1}e^{2\pi i \phi j}|j\rangle|\psi\rangle \rightarrow |\tilde{\phi}\rangle|\psi\rangle,
+$$
+where $|\tilde{\phi}\rangle$ is a good estimator for $\phi$.
 \paragraph{Theorem \textit{(Phase estimation)}.} Assume a unitary $U$ is given as a black box. There exist a quantum algorithm that, given an eigenvector $\psi \in U$ with eigenvalue $e^{i\phi}$, outputs a real number $w$ such that $|w-\phi|\leq\delta$ with probability at least $\frac{9}{10}$. Moreover, the algorithms uses $\mathbb{O}(\frac{1}{\delta})$ controlled applications of $U$ and $\frac{1}{\delta}polylog\left(\frac{1}{\delta}\right)$ other elementary operations.\\
 \newline
 \textit{proof.} ...\\
