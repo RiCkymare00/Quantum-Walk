@@ -261,10 +261,13 @@ $$
 $$
 =\frac{1}{2^{\frac{t}{2}}}\sum_{k=0}^{2^t-1}e^{2\pi i \phi k}|k\rangle.
 $$
-After having then applied the inverse quantum transform to the first register the, final step is to read the output of first register by performing a measurement in the computational basis:$$
+After having then applied the inverse quantum transform to the first register $$
 \frac{1}{2^{\frac{t}{2}}}\sum_{j=0}^{2^t-1}e^{2\pi i \phi j}|j\rangle|\psi\rangle \rightarrow |\tilde{\phi}\rangle|\psi\rangle,
 $$
-where $|\tilde{\phi}\rangle$ is a good estimator for $\phi$.
+where $|\tilde{\phi}\rangle$ is a good estimator for $\phi$, the final step is to read the output of first register by performing a measurement in the computational basis:
+$$
+|\tilde{\phi}\rangle \rightarrow \tilde{\phi}.
+$$
 \paragraph{Theorem \textit{(Phase estimation)}.} Assume a unitary $U$ is given as a black box. There exist a quantum algorithm that, given an eigenvector $\psi \in U$ with eigenvalue $e^{i\phi}$, outputs a real number $w$ such that $|w-\phi|\leq\delta$ with probability at least $\frac{9}{10}$. Moreover, the algorithms uses $\mathbb{O}(\frac{1}{\delta})$ controlled applications of $U$ and $\frac{1}{\delta}polylog\left(\frac{1}{\delta}\right)$ other elementary operations.\\
 \newline
 \textit{proof.} ...\\
