@@ -226,7 +226,7 @@ $$
 $$
 y_k = \frac{1}{\sqrt{N}}\sum_{j=0}^{N-1}x_je^\frac{2\pi ijk}{N},
 $$
-where the input vector $(x_0,\cdots,x_{N_1} )$ is a vector of length $N$ composed of complex number.
+where the input vector $(x_0,\cdots,x_{N_1} )$ is a vector of length $N$ composed of complex numbers.
 \paragraph{Quantum Fourier Transform:}$$
 |j\rangle \rightarrow \frac{1}{\sqrt{N}}\sum_{j=o}^{N-1}e^{\frac{2\pi ijk}{N}}|k\rangle,
 $$
@@ -256,13 +256,14 @@ $$
 then, the inverse of the quantum Fourier transform is applied to the first register.\\
 The final state of the first register after having applied the previous circuit is:
 $$
-\frac{1}{2^{\frac{t}{2}}}\left(|0\rangle + e^{2\pi i 2^{t-1}\phi}|1\rangle\right)\left(|0\rangle + e^{2\pi i 2^{t-2}\phi}|1\rangle\right)\cdots\left(|0\rangle + e^{2\pi i 2^{0}\phi}|1\rangle\right) =
+\frac{1}{2^{\frac{t}{2}}}\left[\left(|0\rangle + e^{2\pi i 2^{t-1}\phi}|1\rangle\right)\otimes\left(|0\rangle + e^{2\pi i 2^{t-2}\phi}|1\rangle\right)\otimes\cdots\otimes\left(|0\rangle + e^{2\pi i 2^{0}\phi}|1\rangle\right)\right] =
 $$
 $$
 =\frac{1}{2^{\frac{t}{2}}}\sum_{k=0}^{2^t-1}e^{2\pi i \phi k}|k\rangle.
 $$
+The previous computation can be found in \textit{Appendix A}.\\
 After having then applied the inverse quantum transform to the first register $$
-\frac{1}{2^{\frac{t}{2}}}\sum_{j=0}^{2^t-1}e^{2\pi i \phi j}|j\rangle|\psi\rangle \rightarrow |\tilde{\phi}\rangle|\psi\rangle,
+\frac{1}{2^{\frac{t}{2}}}\sum_{j=0}^{2^t-1}e^{2\pi i \phi j}|j\rangle\otimes|\psi\rangle \rightarrow |\tilde{\phi}\rangle\otimes|\psi\rangle,
 $$
 where $|\tilde{\phi}\rangle$ is a good estimator for $\phi$, the final step is to read the output of first register by performing a measurement in the computational basis:
 $$
@@ -320,4 +321,37 @@ The \textbf{step of the quantum walk} is defined by $R_AR_X$ where $R_X = \bigop
 \paragraph{Theorem} The previous algorithm detects the presence of a marked vertex with probability at least $\frac{2}{3}$. The algorithms uses $\mathbb{O}(\sqrt{RW})$ steps of the quantum walk.\\
 \newline
 \textit{proof.}
+\newpage
+\section{Appendix A}
+Given $$
+U^{2^j}|\psi\rangle = e^{2\pi i 2^j\phi}|\psi\rangle
+$$
+after having applied the \textit{H-gates} to the initial state we have:$$
+|\Psi_1\rangle = (\textbf{H}^{\otimes^t} \otimes \textbf{1})[|0\rangle^{\otimes ^t} \otimes |\psi\rangle] =
+$$
+$$
+= \frac{1}{2^{\frac{t}{2}}}\bigotimes_{j=1}^t(|0\rangle_j + |1\rangle_j)\otimes |\psi\rangle.
+$$
+After having applied the \textit{$C-U^{2^j} gates$} we have:
+$$
+\left(\prod_{m=1}^tC-U^{2^{t-m}}\right)|\Psi_1\rangle =
+$$
+$$
+(C-U^{2^0})(C-U^{2^1})\cdots(C-U^{2^{t-2}})\underbrace{(C-U^{2^{t-1}})}_{|0\rangle_1\langle0|\otimes \textbf{1}_{2^{t-1}}\otimes \textbf{1} + |1\rangle_1\langle1|\otimes \textbf{1}_{2^{t-1}}\otimes \textbf{U}^{2^{t-1}}}|\Psi_1\rangle = 
+$$
+$$
+(C-U^{2^0})(C-U^{2^1})\cdots(C-U^{2^{t-2}})(C-U^{2^{t-1}})\left[\frac{1}{2^{\frac{t}{2}}}\bigotimes_{j=1}^t\left(|0\rangle_j + |1\rangle_j \right)\otimes |\psi\rangle \right] =
+$$
+$$
+(C-U^{2^0})(C-U^{2^1})\cdots(C-U^{2^{t-3}})\frac{1}{2^{\frac{t}{2}}}(|0\rangle_1+e^{2\pi i 2^{t-1}}|1\rangle_1)\otimes(|0\rangle_2+e^{2\pi i 2^{t-2}}|1\rangle_2)\otimes \left[\bigotimes_{j=3}^t\left(|0\rangle_j + |1\rangle_j \right)\otimes |\psi\rangle \right] =
+$$
+$$
+\frac{1}{2^{\frac{t}{2}}}\bigotimes_{j=1}^t\left(|0\rangle_j + e^{2\pi i 2^{t-j}}|1\rangle_j \right)\otimes |\psi\rangle =
+$$
+$$
+\frac{1}{2^{\frac{t}{2}}}\left[\left(|0\rangle + e^{2\pi i 2^{t-1}\phi}|1\rangle\right)\otimes\left(|0\rangle + e^{2\pi i 2^{t-2}\phi}|1\rangle\right)\otimes\cdots\otimes\left(|0\rangle + e^{2\pi i 2^{0}\phi}|1\rangle\right)\right] =
+$$
+$$
+=\boxed{\frac{1}{2^{\frac{t}{2}}}\sum_{k=0}^{2^t-1}e^{2\pi i \phi k}|k\rangle.}
+$$
 \end{document}
