@@ -8,7 +8,7 @@
 \usepackage{algpseudocode}
 \usepackage{quantikz}
 \usepackage{amsmath}
-
+\usepackage{hyperref}
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta,decorations.pathmorphing,shadings}
 
@@ -261,7 +261,7 @@ $$
 $$
 =\frac{1}{2^{\frac{t}{2}}}\sum_{k=0}^{2^t-1}e^{2\pi i \phi k}|k\rangle.
 $$
-The previous computation can be found in \textit{Appendix A}.\\
+The previous computation can be found in \hyperref[app:A]{\textit{Appendix A}}.\\
 After having then applied the inverse quantum transform to the first register $$
 \frac{1}{2^{\frac{t}{2}}}\sum_{j=0}^{2^t-1}e^{2\pi i \phi j}|j\rangle\otimes|\psi\rangle \rightarrow |\tilde{\phi}\rangle\otimes|\psi\rangle,
 $$
@@ -322,7 +322,8 @@ The \textbf{step of the quantum walk} is defined by $R_AR_X$ where $R_X = \bigop
 \newline
 \textit{proof.}
 \newpage
-\section{Appendix A}
+\appendix
+\section{First half of the mathematical computation of first register evolution in the phase estimation algorithm}\label{app:A}
 Given $$
 U^{2^j}|\psi\rangle = e^{2\pi i 2^j\phi}|\psi\rangle
 $$
@@ -332,7 +333,7 @@ $$
 $$
 = \frac{1}{2^{\frac{t}{2}}}\bigotimes_{j=1}^t(|0\rangle_j + |1\rangle_j)\otimes |\psi\rangle.
 $$
-After having applied the \textit{$C-U^{2^j} gates$} we have:
+Applying \textit{$C-U^{2^j} gates$} we have:
 $$
 \left(\prod_{m=1}^tC-U^{2^{t-m}}\right)|\Psi_1\rangle =
 $$
