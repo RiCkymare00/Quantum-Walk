@@ -284,13 +284,13 @@ $$
 \left(\langle \bar{0}|\otimes \mathbf{1}_X\right)W\left(P\right)\left(| \bar{0}\rangle \otimes |u\rangle\right) = D(P)|u\rangle.
 $$
 \newline
-In this framework, if $\mathit{H_u}$ denotes the \textit{local space} of u, $\bigoplus_{u\in\mathit{H_X}}\mathit{H_u}$ equals the whole space of the quantum walk, and $\bigoplus_{u\in\mathit{H_A}}\mathit{H_u}$ equals the residual subspace.\\
+In this framework, if $\mathit{H_u}$ denotes the \textit{local space} of $u$, $\bigoplus_{u\in\mathit{H_X}}\mathit{H_u}$ equals the whole space of the quantum walk, and $\bigoplus_{u\in\mathit{H_A}}\mathit{H_u}$ equals the residual subspace.\\
 \newline
 Defined as $\sigma$ the initial probability distribution, the quantum walk starts in the state $$
 \varsigma = \sum_{\psi \in \mathit{H}_A\otimes\mathit{H_X}}\sqrt{\sigma_{\psi}}|\psi\rangle.
 $$
 The \textbf{step of the quantum walk} is defined by $R_AR_X$ where $R_X = \bigoplus_{u\in X}D_u$ and $R_A = \bigoplus_{u\in A}D_u$ are the direct sums of the diffusion operations. Each $D_u$ is a reflection operation in $\mathit{H}_u$. Hence, all $D_u$ in $R_X$ or $R_A$ commute, that makes them easy to implement in parallel. They are as follows:\begin{itemize}
-    \item If $u$ is marked, then $D_u$ is the identity $\mathbf{1}_u$;
+    \item If $u$ is marked, then $D_u$ is the identity $\mathbf{1}_u$, i.e., the reflection about $\mathit{H_u}$;
     \item If $u$ in not marked, then $D_u$ is the reflection about the orthogonal component of $\psi_u \in \mathit{H_u}$, where $$
     |\psi_u\rangle = \sqrt{\frac{\sigma_u}{C_1R}}|u\rangle +\sum_{u,v \in \mathit{H_A}\otimes\mathit{H_X}}\sqrt{w_{uv}}|uv\rangle
     $$
@@ -323,7 +323,7 @@ The \textbf{step of the quantum walk} is defined by $R_AR_X$ where $R_X = \bigop
 \textit{proof.}
 \newpage
 \appendix
-\section{First half of the mathematical computation of first register evolution in the phase estimation algorithm}\label{app:A}
+\section{First half of the mathematical computation of the first register evolution in the phase estimation algorithm}\label{app:A}
 Given $$
 U^{2^j}|\psi\rangle = e^{2\pi i 2^j\phi}|\psi\rangle
 $$
