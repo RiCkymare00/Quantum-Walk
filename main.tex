@@ -269,9 +269,31 @@ where $|\tilde{\phi}\rangle$ is a good estimator for $\phi$, the final step is t
 $$
 |\tilde{\phi}\rangle \rightarrow \tilde{\phi}.
 $$
-\paragraph{Theorem \textit{(Phase estimation)}.} Assume a unitary $U$ is given as a black box. There exist a quantum algorithm that, given an eigenvector $\psi \in U$ with eigenvalue $e^{i\phi}$, outputs a real number $w$ such that $|w-\phi|\leq\delta$ with probability at least $\frac{9}{10}$. Moreover, the algorithms uses $\mathbb{O}(\frac{1}{\delta})$ controlled applications of $U$ and $\frac{1}{\delta}polylog\left(\frac{1}{\delta}\right)$ other elementary operations.\\
+As noted in the last section, in the case $\phi = 0.a_1\cdots a_t$, the state $|a_1\cdots a_t\rangle$ (hence $\phi$) can be obtained by just applying the inverse of the \textit{QFT}. This will produce the state $|a_1\cdots a_t\rangle$ exactly, however, in case $\phi$ is not a fraction of a power of two, applying the inverse of the \textit{QFT} produces the best m-bit approximation of $\phi$ with probability at least $\frac{4}{\pi^2}=0.405\cdots .$\\
+To see why, let $\frac{a}{2^t} = 0.a_1\cdots a_t$ be the best m-bit estimate of $\phi$. Then $\phi = \frac{a}{2^t}+\delta$, where $0\leq |\delta |\leq\frac{1}{2^{t+1}}$. Applying the inverse \textit{QFT} to the state $$
+\frac{1}{2^{\frac{t}{2}}}\left[\left(|0\rangle + e^{2\pi i 2^{t-1}\phi}|1\rangle\right)\otimes\left(|0\rangle + e^{2\pi i 2^{t-2}\phi}|1\rangle\right)\otimes\cdots\otimes\left(|0\rangle + e^{2\pi i 2^{0}\phi}|1\rangle\right)\right] =
+$$
+$$
+=\frac{1}{2^{\frac{t}{2}}}\sum_{k=0}^{2^t-1}e^{2\pi i \phi k}|k\rangle,
+$$
+yields the state
+$$
+\frac{1}{2^t}\sum_{j=0}^{2^t-1}\sum_{k=0}^{2^t-1}e^{-\frac{2 \pi i j k}{2^m}}e^{2 \pi i \phi k}|j\rangle = \frac{1}{2^t}\sum_{j=0}^{2^t-1}\sum_{k=0}^{2^t-1}e^{-\frac{2 \pi i j k}{2^m}}e^{2 \pi i (\frac{a}{2^m}+\delta) k}|j\rangle = 
+$$
+$$
+= \frac{1}{2^t}\sum_{j=0}^{2^t-1}\sum_{k=0}^{2^t-1}e^{-\frac{2 \pi i (a-j) k}{2^m}}e^{2 \pi i \delta k}|j\rangle
+$$
+and the coefficient of $|a_1\cdots a_t\rangle = |a\rangle$, which can be computed when $j = a$\footnote{$\frac{1}{2^t}\sum_{j=0}^{2^t-1}\sum_{k=0}^{2^t-1}e^{-\frac{2 \pi i (a-j) k}{2^m}}e^{2 \pi i \delta k}|j\rangle$ $\rightarrow_{j=a}$ $\frac{1}{2^t}\sum_{k=0}^{2^t-1}e^{2 \pi i \delta k}|a\rangle$}, in the above is the geometric series
+$$
+\frac{1}{2^t}\sum_{k=0}^{2^t-1}(e^{2 \pi i \delta})^k = \frac{1}{2^t}\left(\frac{1-(e^{2 \pi i \delta})^{2^t}}{1-e^{2 \pi i \delta}}\right).
+$$
+Since $|\delta| \leq \frac{1}{2^{t+1}}$, it follows that $2 \pi \delta 2^t \leq \pi$, and thus $|1-e^{2 \pi i \delta 2^t}| \geq \frac{2 \pi \delta 2^t}{\frac{\pi}{2}} = 4 \delta 2^t$. Also, $|1-e^{2 \pi i \delta}| \leq 2 \pi \delta$. Therefore, the probability of observing $a_1\cdots a_t$ when measuring the state is $$
+\left| \frac{1}{2^m}\left( \frac{1-(e^{2 \pi i \delta})^{2^m}}{1-e^{2 \pi i \delta}}\right)\right|^2 \geq \left( \frac{1}{2^m} \left( \frac{4\delta 2^m}{2 \pi \delta}\right)\right) ^2 = \frac{4}{\pi^2}.
+$$
+The success probability can be amplified to $1 -\epsilon$ for any $\epsilon >0$ by inflating $t$ to $t^{'} = t + \mathbb{O}\left(\log\left( \frac{1}{\epsilon}\right)\right)$, and rounding off the resulting $t^{'}$-bit string to its most significant $t$ bits.
+\paragraph{\textcolor{red}{Theorem \textit{(Phase estimation)}}.} \textcolor{red}{Assume a unitary $U$ is given as a black box. There exist a quantum algorithm that, given an eigenvector $\psi \in U$ with eigenvalue $e^{i\phi}$, outputs a real number $w$ such that $|w-\phi|\leq\delta$ with probability at least $\frac{9}{10}$. Moreover, the algorithms uses $\mathbb{O}(\frac{1}{\delta})$ controlled applications of $U$ and $\frac{1}{\delta}polylog\left(\frac{1}{\delta}\right)$ other elementary operations.}\\
 \newline
-\textit{proof.} ...\\
+\textit{\textcolor{red}{proof.}} \textcolor{red}{...}\\
 \newline
 \subsection{Quantum walk}
 \paragraph{Definition \textit{(Quantum walk operator).}} For any reversible Markov chain $P$ on a finite state space $X$, a \textbf{quantum walk operator} $W(P)$ is a unitary $\mathit{H}_A\otimes\mathit{H_X}$, such that $|\bar{0}\rangle \in \mathit{H_A}$, $span\{|u\rangle:u\in X\} \subseteq \mathit{H_X}$, and for all $u \in X$ it holds that $$
@@ -320,7 +342,7 @@ The \textbf{step of the quantum walk} is defined by $R_AR_X$ where $R_X = \bigop
 \end{tcolorbox}
 \paragraph{Theorem} The previous algorithm detects the presence of a marked vertex with probability at least $\frac{2}{3}$. The algorithms uses $\mathbb{O}(\sqrt{RW})$ steps of the quantum walk.\\
 \newline
-\textit{proof.}
+\textit{proof} ...
 \newpage
 \appendix
 \section{First half of the mathematical computation of the first register evolution in the phase estimation algorithm}\label{app:A}
