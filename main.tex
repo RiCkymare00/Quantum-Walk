@@ -260,10 +260,15 @@ $$
 $$
 $$
 =\frac{1}{2^{\frac{t}{2}}}\sum_{k=0}^{2^t-1}e^{2\pi i \phi k}|k\rangle.
-$$
+$$\footnote{Physical interpretation (useful for understanding the physical meaning of the iQFT):\begin{itemize}
+    \item $k$ is the discrete "time/position" index,  
+    \item $\phi$ is the frequency (or wave number),  
+    \item $e^{2 \pi i \phi k}$ represents a periodic oscillation.
+
+\end{itemize}}
 The previous computation can be found in \hyperref[app:A]{\textit{Appendix A}}.\\
 After having then applied the inverse quantum transform to the first register $$
-\frac{1}{2^{\frac{t}{2}}}\sum_{j=0}^{2^t-1}e^{2\pi i \phi j}|j\rangle\otimes|\psi\rangle \rightarrow |\tilde{\phi}\rangle\otimes|\psi\rangle,
+\frac{1}{2^{\frac{t}{2}}}\sum_{j=0}^{2^t-1}e^{2\pi i \phi k}|k\rangle\otimes|\psi\rangle \rightarrow |\tilde{\phi}\rangle\otimes|\psi\rangle,
 $$
 where $|\tilde{\phi}\rangle$ is a good estimator for $\phi$, the final step is to read the output of first register by performing a measurement in the computational basis:
 $$
